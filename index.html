@@ -12,8 +12,25 @@
   <!-- <script src="app/js/graficas.js"></script> -->
 </head>
 <body>
+  <button id="change" class="btn">Generar</button>
   <div id="container" style="width:100%; height:400px;"></div>
+  <div class="row">
+    <div class="col s12 m6 l6">
+      <h5 class="center">Prueba de chi cuadrado</h5>
+      <table class="striped" id="chiTable">
+        <thead>
+          <tr>
+            <th>Rango</th>
+            <th>FO</th>
+            <th>FE</th>
+            <th>(FE-FO)^2/FE</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
   <div id="container2" style="width:100%; height:400px;"></div>
-  <button id="change" class="btn">Refresh</button>
 </body>
 </html>
