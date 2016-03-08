@@ -81,11 +81,9 @@ function minimunStandarFactorizedGenerator(X0, a, m){
   return Xn;
 }
 
-function calculateChiTable(numbers){
+function calculateFO(numbers){
   var FO = new Array(10).fill(0);
-  var FE = numbers.length/10;
-  var X2 = [];
-  var sumX2 = 0;
+
   for (var i = 0; i < numbers.length; i++) {
     number = numbers[i];
     if (number >= 0 && number < 0.1) {
@@ -119,6 +117,14 @@ function calculateChiTable(numbers){
       FO[9] += 1;
     }
   }
+  return FO;
+}
+
+function calculateChiTable(numbers){
+  var FO = calculateFO(numbers)
+  var FE = numbers.length/10;
+  var X2 = [];
+  var sumX2 = 0;
 
   for (var i = 0; i < 10; i++) {
     X2[i] = (Math.pow((FE - FO[i]),2) / FE);
@@ -128,8 +134,32 @@ function calculateChiTable(numbers){
 }
 
 function calculateK_STable(numbers){
-  
+  var FO = calculateFO(numbers);
+  var FOA = [];
+  var POA = [];
+  var PEA = new Array(10).fill(0);
+  var KS = [];
+  var max_KS = 0;
 
+  // calculamos la frecuencia acumulada
+  FOA[0] = FO[0];
+  for (var i = 1; i < 10; i++) {
+    FOA[i] = FOA[i-1] + FO[i];
+  }
+  var n = FOA[9];
+  for (var i = 0; i < 10; i++) {
+    POA[i] = FOA[i] / n;
+  }
+  for (var i = 0; i < 10; i++) {
+    PEA[i] += ((i + 1) / 10);
+  }
+  for (var i = 0; i < 10; i++) {
+    KS[i] = Math.abs(PEA[i] - POA[i]);
+  }
+  max_KS = Math.max.apply(Math, KS);
+  console.log(max_KS);
+  console.log(KS);
+  return [FO,FOA,POA,PEA,KS,max_KS];
 }
 
 function showChiTable(numbers){
@@ -153,6 +183,31 @@ function showChiTable(numbers){
     $('#chiTable > tbody:last-child').append('<tr> <td>'+ ranges[i] +'</td> <td>'+ FO[i] +'</td> <td>'+ FE +'</td> <td>'+ X2[i] +'</td> </tr>');
   }
   $('#chiTable > tbody:last-child').append('<tr> <td>Total</td><td>-</td><td>-</td><td>'+ sumX2 +'</td> </tr>');
+}
+
+function showK_STable(numbers){
+  $('#K_STable > tbody').empty();
+  var K_STable = calculateK_STable(numbers);
+  var FO = K_STable[0]
+  var FOA = K_STable[1]
+  var POA = K_STable[2]
+  var PEA = K_STable[3]
+  var KS = K_STable[4]
+  var max_KS = K_STable[5]
+  var ranges = ["0.0 - 0.1",
+                "0.1 - 0.2",
+                "0.2 - 0.3",
+                "0.3 - 0.4",
+                "0.4 - 0.5",
+                "0.5 - 0.6",
+                "0.6 - 0.7",
+                "0.7 - 0.8",
+                "0.8 - 0.9",
+                "0.9 - 1.0"]
+  for (var i = 0; i < 10; i++) {
+    $('#K_STable > tbody:last-child').append('<tr> <td>'+ ranges[i] +'</td> <td>'+ FO[i] +'</td> <td>'+ FOA[i] +'</td> <td>'+ POA[i] +'</td> <td>'+ PEA[i] +'</td> <td>'+ KS[i] +'</td> </tr>');
+  }
+  $('#K_STable > tbody:last-child').append('<tr> <td>Total</td><td>-</td><td>-</td><td>-</td><td>-</td><td>'+ max_KS +'</td> </tr>');
 }
 
 
@@ -196,8 +251,10 @@ $(function () {
     $('#change').click(function() {
       var result = generateDataSet(ciclicLineal(5,5,13,7));
       var result2 = generateDataSet(ciclicMinimum(5,12,21));
-      calculateChiTable(result[0]);
+      // calculateChiTable(result[0]);
+      // calculateK_STable(result[0]);
       showChiTable(result[0]);
+      showK_STable(result[0]);
       chartScatter.series[0].setData(result[0]);
       //chartBar.series[0].setData(result[1]);
       chartBar.series[0].setData(result2[0]);
