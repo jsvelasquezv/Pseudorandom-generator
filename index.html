@@ -12,12 +12,35 @@
   <!-- <script src="app/js/graficas.js"></script> -->
 </head>
 <body>
-  <button id="change" class="btn">Generar</button>
-  <div id="container" style="width:100%; height:400px;"></div>
+  <div class="row">
+    <div class="col m2 l2">
+      <label for="semilla">X0</label>
+      <input type="text" name="semilla" id="semilla">
+    </div>
+    <div class="col m2 l2">
+      <label for="a">a</label>
+      <input type="text" name="a" id="a">
+    </div>
+    <div class="col m2 l2">
+      <label for="c">c</label>
+      <input type="text" name="c" id="c">
+    </div>
+    <div class="col m2 l2">
+      <label for="m">m</label>
+      <input type="text" name="m" id="m">
+    </div>
+    <div class="col m2 l2">
+      <button id="change" class="btn">Generar</button>
+    </div>
+  </div>
+  
+  <!-- Generador lineal -->
+  <div id="container" style="width:100%; height:400px;"></div>\
+
   <div class="row">
     <div class="col s12 m6 l6">
       <h5 class="center">Prueba de chi cuadrado</h5>
-      <table class="striped" id="chiTable">
+      <table class="striped" id="chiTableLineal">
         <thead>
           <tr>
             <th>Rango</th>
@@ -32,7 +55,7 @@
     </div>
     <div class="col s12 m6 l6">
       <h5 class="center">Prueba de Kolmogorov-Smirnov</h5>
-      <table class="striped" id="K_STable">
+      <table class="striped" id="K_STableLineal">
         <thead>
           <tr>
             <th>Rango</th>
@@ -48,6 +71,79 @@
       </table>
     </div>
   </div>
+  <!-- Generador de estandar minimo -->
   <div id="container2" style="width:100%; height:400px;"></div>
+
+  <div class="row">
+    <div class="col s12 m6 l6">
+      <h5 class="center">Prueba de chi cuadrado</h5>
+      <table class="striped" id="chiTableMinimum">
+        <thead>
+          <tr>
+            <th>Rango</th>
+            <th>FO</th>
+            <th>FE</th>
+            <th>(FE-FO)^2/FE</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+    <div class="col s12 m6 l6">
+      <h5 class="center">Prueba de Kolmogorov-Smirnov</h5>
+      <table class="striped" id="K_STableMinimum">
+        <thead>
+          <tr>
+            <th>Rango</th>
+            <th>FO</th>
+            <th>FOA</th>
+            <th>POA</th>
+            <th>PEA</th>
+            <th>|PEA - POA|</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Generador del lenguaje -->
+  <div id="container3" style="width:100%; height:400px;"></div>
+  <div class="row">
+    <div class="col s12 m6 l6">
+      <h5 class="center">Prueba de chi cuadrado</h5>
+      <table class="striped" id="chiTableLanguage">
+        <thead>
+          <tr>
+            <th>Rango</th>
+            <th>FO</th>
+            <th>FE</th>
+            <th>(FE-FO)^2/FE</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+    <div class="col s12 m6 l6">
+      <h5 class="center">Prueba de Kolmogorov-Smirnov</h5>
+      <table class="striped" id="K_STableLanguage">
+        <thead>
+          <tr>
+            <th>Rango</th>
+            <th>FO</th>
+            <th>FOA</th>
+            <th>POA</th>
+            <th>PEA</th>
+            <th>|PEA - POA|</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </body>
 </html>

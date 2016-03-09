@@ -13,10 +13,6 @@ function generateDataSet(generator) {
 
   numbers = generator;
 
-  /*for (var i = 0; i < 100; i++) {
-    // numbers[i] = Math.floor((Math.random() * 100));
-  }*/
-
   // Determinamos la frecuencia de cada uno de los numeros
   for (var i = 0; i < numbers.length; i++){
     counts[numbers[i]] = (counts[numbers[i]] + 1) || 1;
@@ -66,6 +62,14 @@ function ciclicMinimum(X0,a,m) {
     i++;
   }
   numbers.length = numbers.length - 1;
+  return numbers;
+}
+
+function ciclicLanguage(m){
+  var numbers = [];
+  for (var i = 0; i < m; i++) {
+    numbers[i] = Math.random();
+  }
   return numbers;
 }
 
@@ -166,8 +170,8 @@ function calculateK_STable(numbers){
   return [FO,FOA,POA,PEA,KS,max_KS];
 }
 
-function showChiTable(numbers){
-  $('#chiTable > tbody').empty();
+function showChiTable(numbers, table){
+  $('#' + table + ' > tbody').empty();
   var chiTable = calculateChiTable(numbers);
   var FO = chiTable[0];
   var FE = chiTable[1];
@@ -184,13 +188,13 @@ function showChiTable(numbers){
                 "0.8 - 0.9",
                 "0.9 - 1.0"]
   for (var i = 0; i < 10; i++) {
-    $('#chiTable > tbody:last-child').append('<tr> <td>'+ ranges[i] +'</td> <td>'+ FO[i] +'</td> <td>'+ FE +'</td> <td>'+ X2[i] +'</td> </tr>');
+    $('#' + table + ' > tbody:last-child').append('<tr> <td>'+ ranges[i] +'</td> <td>'+ FO[i] +'</td> <td>'+ FE +'</td> <td>'+ X2[i] +'</td> </tr>');
   }
-  $('#chiTable > tbody:last-child').append('<tr> <td>Total</td><td>-</td><td>-</td><td>'+ sumX2 +'</td> </tr>');
+  $('#' + table + ' > tbody:last-child').append('<tr> <td>Total</td><td>-</td><td>-</td><td>'+ sumX2 +'</td> </tr>');
 }
 
-function showK_STable(numbers){
-  $('#K_STable > tbody').empty();
+function showK_STable(numbers, table){
+  $('#' + table + ' > tbody').empty();
   var K_STable = calculateK_STable(numbers);
   var FO = K_STable[0]
   var FOA = K_STable[1]
@@ -209,14 +213,13 @@ function showK_STable(numbers){
                 "0.8 - 0.9",
                 "0.9 - 1.0"]
   for (var i = 0; i < 10; i++) {
-    $('#K_STable > tbody:last-child').append('<tr> <td>'+ ranges[i] +'</td> <td>'+ FO[i] +'</td> <td>'+ FOA[i] +'</td> <td>'+ POA[i] +'</td> <td>'+ PEA[i] +'</td> <td>'+ KS[i] +'</td> </tr>');
+    $('#' + table + ' > tbody:last-child').append('<tr> <td>'+ ranges[i] +'</td> <td>'+ FO[i] +'</td> <td>'+ FOA[i] +'</td> <td>'+ POA[i] +'</td> <td>'+ PEA[i] +'</td> <td>'+ KS[i] +'</td> </tr>');
   }
-  $('#K_STable > tbody:last-child').append('<tr> <td>Total</td><td>-</td><td>-</td><td>-</td><td>-</td><td>'+ max_KS +'</td> </tr>');
+  $('#' + table + ' > tbody:last-child').append('<tr> <td>Total</td><td>-</td><td>-</td><td>-</td><td>-</td><td>'+ max_KS +'</td> </tr>');
 }
 
-function streakTest(){
+function streakTest(numbers){
   var corridas = 0;
-  var numbers = [2,3,1,0,5,3,5,2,1,9,8,5];
   var corrida = '';
   for (var i = 1; i < numbers.length; i++) {
     if (numbers[i-1] < numbers[i]) {
@@ -266,17 +269,68 @@ function pokerTest(numbers){
 
 function seriesTest(numbers){
   var series = [];
+  var frecuencyTable = new Array(5);
+  var expectedFrecuency = numbers.length / 25;
+  var chi = 0;
+  for (var i = 0; i < frecuencyTable.length; i++) {
+    frecuencyTable[i] = new Array(5).fill(0);
+  }
   if (numbers.length % 2 != 0) {
     numbers = numbers.slice(0,numbers.length-1);
   }
   for (var i = 0; i < numbers.length; i+=2) {
-    series[i] = [numbers[i],numbers[i+1]]; 
+    series[i/2] = [numbers[i],numbers[i+1]]; 
   }
-  
+  for (var i = 0; i < series.length; i++) {
+    pair = series[i];
+    x = pair[0];
+    y = pair[1];
+    posX = 0;
+    posY = 0;
+
+    if (x >= 0 && x < 0.2) {
+      posX = 0;
+    }
+    if (x >= 0.2 && x < 0.4) {
+      posX = 1;
+    }
+    if (x >= 0.4 && x < 0.6) {
+      posX = 2;
+    }
+    if (x >= 0.6 && x < 0.8) {
+      posX = 3;
+    }
+    if (x >= 0.8 && x < 1.0) {
+      posX = 4;
+    }
+
+    if (y >= 0 && y < 0.2) {
+      posY = 0;
+    }
+    if (y >= 0.2 && y < 0.4) {
+      posY = 1;
+    }
+    if (y >= 0.4 && y < 0.6) {
+      posY = 2;
+    }
+    if (y >= 0.6 && y < 0.8) {
+      posY = 3;
+    }
+    if (y >= 0.8 && y < 1.0) {
+      posY = 4;
+    }
+    frecuencyTable[posX][posY] += 1;
+  }
+  for (var i = 0; i < 5; i++) {
+    for (var j = 0; j < 5; j++) {
+      chi += Math.pow(expectedFrecuency - frecuencyTable[i][j],2) / expectedFrecuency;
+    }
+  }
+  return chi;
 }
 
 $(function () {
-    var chartScatter = new Highcharts.Chart({
+    var chartLineal = new Highcharts.Chart({
         title: {
           text: 'Generador lineal congruente'
         },
@@ -296,7 +350,7 @@ $(function () {
         }]
     });
 
-    var chartBar = new Highcharts.Chart({
+    var chartMinimunStandard = new Highcharts.Chart({
         title: {
           text: 'Generador de estandar minimo'
         },
@@ -308,23 +362,63 @@ $(function () {
         
         series: [{
             name: 'Numeros generados',
-            data: []
+            data: [],
+            marker: {
+              radius: 2,
+              fillColor: '#F91919'
+            }
         }]
     });
 
+
+    var chartLanguageRandom = new Highcharts.Chart({
+        title: {
+          text: 'Generador del lenguaje'
+        },
+
+        chart: {
+            renderTo: 'container3',
+            type: 'scatter'
+        },
+        
+        series: [{
+            name: 'Numeros generados',
+            data: [],
+            marker: {
+              radius: 2,
+              fillColor: '#F91919'
+            }
+        }]
+    });
     // The button action
     $('#change').click(function() {
-      var result = generateDataSet(ciclicLineal(5,5,13,7));
-      var result2 = generateDataSet(ciclicMinimum(5,12,21));
-      // calculateChiTable(result[0]);
-      // calculateK_STable(result[0]);
-      streakTest();
-      pokerTest(result[0]);
-      seriesTest(result[0]);
-      showChiTable(result[0]);
-      showK_STable(result[0]);
-      chartScatter.series[0].setData(result[0]);
-      //chartBar.series[0].setData(result[1]);
-      chartBar.series[0].setData(result2[0]);
+      var semilla = $('#semilla').val();
+      var a = $('#a').val();
+      var c = $('#c').val();
+      var m = $('#m').val();
+
+      var lineal = generateDataSet(ciclicLineal(semilla,a,c,m));
+      streakTest(lineal[0]);
+      seriesTest(lineal[0]);
+      pokerTest(lineal[0]);
+      showChiTable(lineal[0], 'chiTableLineal');
+      showK_STable(lineal[0], 'K_STableLineal');
+      chartLineal.series[0].setData(lineal[0]);
+  
+      var minimumStandard = generateDataSet(ciclicMinimum(semilla,a,m));
+      streakTest(minimumStandard[0]);
+      seriesTest(minimumStandard[0]);
+      pokerTest(minimumStandard[0]);
+      showChiTable(minimumStandard[0], 'chiTableMinimum');
+      showK_STable(minimumStandard[0], 'K_STableMinimum');
+      chartMinimunStandard.series[0].setData(minimumStandard[0]);
+      
+      var language = generateDataSet(ciclicLanguage(m));
+      streakTest(language[0]);
+      seriesTest(language[0]);
+      pokerTest(language[0]);
+      showChiTable(language[0], 'chiTableLanguage');
+      showK_STable(language[0], 'K_STableLanguage');
+      chartLanguageRandom.series[0].setData(language[0]);
     });
 });
