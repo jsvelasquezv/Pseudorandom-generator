@@ -1,3 +1,9 @@
+Number.prototype.toFixedDown = function(digits) {
+    var re = new RegExp("(\\d+\\.\\d{" + digits + "})(\\d)"),
+        m = this.toString().match(re);
+    return m ? parseFloat(m[1]) : this.valueOf();
+};
+
 function generateDataSet(generator) {
   var numbers = [];
   var counts = {};
@@ -157,8 +163,6 @@ function calculateK_STable(numbers){
     KS[i] = Math.abs(PEA[i] - POA[i]);
   }
   max_KS = Math.max.apply(Math, KS);
-  console.log(max_KS);
-  console.log(KS);
   return [FO,FOA,POA,PEA,KS,max_KS];
 }
 
@@ -210,6 +214,66 @@ function showK_STable(numbers){
   $('#K_STable > tbody:last-child').append('<tr> <td>Total</td><td>-</td><td>-</td><td>-</td><td>-</td><td>'+ max_KS +'</td> </tr>');
 }
 
+function streakTest(){
+  var corridas = 0;
+  var numbers = [2,3,1,0,5,3,5,2,1,9,8,5];
+  var corrida = '';
+  for (var i = 1; i < numbers.length; i++) {
+    if (numbers[i-1] < numbers[i]) {
+      corrida += '+';
+    }
+    if (numbers[i-1] > numbers[i]) {
+      corrida += '-';
+    }
+  }
+  for (var i = 1; i < corrida.length; i++) {
+    if (corrida[i-1]!=corrida[i]) {
+      corridas ++;
+    }
+  }
+  return [corridas,corrida];
+}
+
+function pokerTest(numbers){
+  var truncated = [];
+  var observations = new Array(3).fill(0);
+  var size = numbers.length;
+  var expected = [0.72 * size , 0.27 * size, 0.01 * size];
+  var chi = 0;
+  for (var i = 0; i < numbers.length; i++) {
+    truncated[i] = numbers[i].toFixedDown(3);
+  }
+  for (var i = 0; i < truncated.length; i++) {
+    number = truncated[i];
+    if (number[0] != number[1] != number[2]) {
+      observations[0] ++;
+    }
+    else if (number[0] == number[1] == number[2]) {
+      observations[2] ++;
+    }
+    else{
+      observations[1] ++;
+    }
+  }
+  for (var i = 0; i < 3; i++) {
+    esperado = expected[i];
+    observado = observations[i];
+    chi += Math.pow((esperado - observado),2) / esperado
+  }
+  // console.log(chi);
+  return chi;
+}
+
+function seriesTest(numbers){
+  var series = [];
+  if (numbers.length % 2 != 0) {
+    numbers = numbers.slice(0,numbers.length-1);
+  }
+  for (var i = 0; i < numbers.length; i+=2) {
+    series[i] = [numbers[i],numbers[i+1]]; 
+  }
+  
+}
 
 $(function () {
     var chartScatter = new Highcharts.Chart({
@@ -226,7 +290,8 @@ $(function () {
             name: 'Numeros generados',
             data: [],
             marker: {
-              radius: 2
+              radius: 2,
+              fillColor: '#F91919'
             }
         }]
     });
@@ -253,6 +318,9 @@ $(function () {
       var result2 = generateDataSet(ciclicMinimum(5,12,21));
       // calculateChiTable(result[0]);
       // calculateK_STable(result[0]);
+      streakTest();
+      pokerTest(result[0]);
+      seriesTest(result[0]);
       showChiTable(result[0]);
       showK_STable(result[0]);
       chartScatter.series[0].setData(result[0]);
