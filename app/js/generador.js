@@ -221,6 +221,9 @@ function showK_STable(numbers, table){
 function streakTest(numbers){
   var corridas = 0;
   var corrida = '';
+  var media = 0;
+  var varianza = 0;
+  var distribucion = 0;
   for (var i = 1; i < numbers.length; i++) {
     if (numbers[i-1] < numbers[i]) {
       corrida += '+';
@@ -234,7 +237,12 @@ function streakTest(numbers){
       corridas ++;
     }
   }
-  return [corridas,corrida];
+  // return [corridas,corrida];
+  media = (2 * corridas - 1) / 3;
+  varianza = (16 * corridas - 29) / 90;
+  distribucion = (corridas - media) / Math.sqrt(varianza);
+  // z = +- 1.96
+  return distribucion;
 }
 
 function pokerTest(numbers){
@@ -329,6 +337,33 @@ function seriesTest(numbers){
   return chi;
 }
 
+function showStreak(value, div) {
+  if(value >= -1.9 && value <= 1.9){
+    $('#' + div).children().last().replaceWith('<ul class="collection"> <li> Z = ' + value + '. No se puede rechazar la hipotesis de independencia </li> </ul>');
+  }else{
+    // $('#' + div).append('<p> Z = ' + value + '. Se rechaza la hipotesis de independencia</p>');  
+    $('#' + div).children().last().replaceWith('<ul class="collection"> <li> Z = ' + value + '. Se rechaza la hipotesis de independencia </li> </ul>');
+  }
+}
+
+function showSeries(value, div) {
+  if(value <= 36.42){
+    $('#' + div).children().last().replaceWith('<ul class="collection"> <li> X^2 = ' + value + '. No se puede rechazar la hipotesis de independencia </li> </ul>');
+  }else{
+    // $('#' + div).append('<p> Z = ' + value + '. Se rechaza la hipotesis de independencia</p>');  
+    $('#' + div).children().last().replaceWith('<ul class="collection"> <li> x^2 = ' + value + '. Se rechaza la hipotesis de independencia </li> </ul>');
+  }
+}
+
+function showPoker(value, div) {
+  if(value <= 9.49){
+    $('#' + div).children().last().replaceWith('<ul class="collection"> <li> X^2 = ' + value + '. No se puede rechazar la hipotesis de independencia </li> </ul>');
+  }else{
+    // $('#' + div).append('<p> Z = ' + value + '. Se rechaza la hipotesis de independencia</p>');  
+    $('#' + div).children().last().replaceWith('<ul class="collection"> <li> X^2 = ' + value + '. Se rechaza la hipotesis de independencia </li> </ul>');
+  }
+}
+
 $(function () {
     var chartLineal = new Highcharts.Chart({
         title: {
@@ -398,25 +433,25 @@ $(function () {
       var m = $('#m').val();
 
       var lineal = generateDataSet(ciclicLineal(semilla,a,c,m));
-      streakTest(lineal[0]);
-      seriesTest(lineal[0]);
-      pokerTest(lineal[0]);
+      showStreak(streakTest(lineal[0]), 'linealCorridas');
+      showSeries(seriesTest(lineal[0]), 'linealSeries');
+      showPoker(pokerTest(lineal[0]), 'linealPoker');
       showChiTable(lineal[0], 'chiTableLineal');
       showK_STable(lineal[0], 'K_STableLineal');
       chartLineal.series[0].setData(lineal[0]);
   
       var minimumStandard = generateDataSet(ciclicMinimum(semilla,a,m));
-      streakTest(minimumStandard[0]);
-      seriesTest(minimumStandard[0]);
-      pokerTest(minimumStandard[0]);
+      showStreak(streakTest(minimumStandard[0]), 'minimoCorridas');
+      showSeries(seriesTest(minimumStandard[0]), 'minimoSeries');
+      showPoker(pokerTest(minimumStandard[0]), 'minimoPoker');
       showChiTable(minimumStandard[0], 'chiTableMinimum');
       showK_STable(minimumStandard[0], 'K_STableMinimum');
       chartMinimunStandard.series[0].setData(minimumStandard[0]);
       
       var language = generateDataSet(ciclicLanguage(m));
-      streakTest(language[0]);
-      seriesTest(language[0]);
-      pokerTest(language[0]);
+      showStreak(streakTest(language[0]), 'languageCorridas');
+      showSeries(seriesTest(language[0]), 'languageSeries');
+      showPoker(pokerTest(language[0]), 'languagePoker');
       showChiTable(language[0], 'chiTableLanguage');
       showK_STable(language[0], 'K_STableLanguage');
       chartLanguageRandom.series[0].setData(language[0]);
