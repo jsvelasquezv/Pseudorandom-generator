@@ -30,23 +30,40 @@ function generateDataSet(generator) {
   return [numbers, dataSet];
 }
 
-function ciclicLineal(X0,a,c,m) {
+function ciclicLineal(X0,a,c,m){
   var numbers = [];
-  var i = 1;
-  var tempNumber = 0;
-  numbers[0] = X0;
-  tempNumber =  linealCongruentGenerator(X0, a, c, m);
-  while(tempNumber!= X0){
-    tempNumber = linealCongruentGenerator(numbers[i-1], a, c, m);
+  var first = linealCongruentGenerator(X0,a,c,m);
+  var tempNumber = linealCongruentGenerator(first,a,c,m);
+  numbers[0] = first;
+  numbers[1] = tempNumber;
+  var i = 2;
+
+  while(tempNumber != first){
+    tempNumber = linealCongruentGenerator(numbers[i-1],a,c,m);
     numbers[i] = tempNumber;
     i++;
   }
   numbers.length = numbers.length - 1;
-  for (var i = 0; i < numbers.length; i++) {
-    numbers[i] = numbers[i]/ m;
-  }
   return numbers;
 }
+
+// function ciclicLineal(X0,a,c,m) {
+//   var numbers = [];
+//   var i = 1;
+//   var tempNumber = 0;
+//   numbers[0] = X0;
+//   tempNumber =  linealCongruentGenerator(X0, a, c, m);
+//   while(tempNumber!= X0){
+//     tempNumber = linealCongruentGenerator(numbers[i-1], a, c, m);
+//     numbers[i] = tempNumber;
+//     i++;
+//   }
+//   numbers.length = numbers.length - 1;
+//   for (var i = 0; i < numbers.length; i++) {
+//     numbers[i] = numbers[i]/ m;
+//   }
+//   return numbers;
+// }
 
 function ciclicMinimum(X0,a,m) {
   var numbers = [];
