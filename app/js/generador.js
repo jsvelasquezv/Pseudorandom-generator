@@ -381,6 +381,10 @@ function showPoker(value, div) {
   }
 }
 
+function showPeriod(value, div) {
+  $('#' + div).children().last().replaceWith('<ul class="collection"> <li> El periodo para el  generador con los datos ingresados es: ' + value + '</li> </ul>');
+}
+
 $(function () {
     var chartLineal = new Highcharts.Chart({
         title: {
@@ -456,6 +460,8 @@ $(function () {
       showChiTable(lineal[0], 'chiTableLineal');
       showK_STable(lineal[0], 'K_STableLineal');
       chartLineal.series[0].setData(lineal[0]);
+      var linealPeriod = lineal[0].length
+      showPeriod(linealPeriod, 'linealPeriodo');
   
       var minimumStandard = generateDataSet(ciclicMinimum(semilla,a,m));
       showStreak(streakTest(minimumStandard[0]), 'minimoCorridas');
@@ -464,6 +470,8 @@ $(function () {
       showChiTable(minimumStandard[0], 'chiTableMinimum');
       showK_STable(minimumStandard[0], 'K_STableMinimum');
       chartMinimunStandard.series[0].setData(minimumStandard[0]);
+      var minimumStandardPeriod = minimumStandard[0].length;
+      showPeriod(minimumStandardPeriod, 'minimoPeriodo')
       
       var language = generateDataSet(ciclicLanguage(m));
       showStreak(streakTest(language[0]), 'languageCorridas');
